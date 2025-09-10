@@ -1,0 +1,8 @@
+Flask==3.0.3
+SQLAlchemy==2.0.34
+psycopg2-binary==2.9.9          # Postgres driver (Render free tier)
+python-dotenv==1.0.1
+langchain==0.2.15
+langchain-core==0.2.38
+langchain-groq==0.1.8
+gunicorn==22.0.0                 # for Render

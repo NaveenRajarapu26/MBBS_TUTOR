@@ -1,0 +1,13 @@
+prefix=C:/Users/navee/Desktop/MBBS_Tutor/venv/Library
+exec_prefix=C:/Users/navee/Desktop/MBBS_Tutor/venv/Library
+libdir=C:/Users/navee/Desktop/MBBS_Tutor/venv/Library/lib
+sharedlibdir=C:/Users/navee/Desktop/MBBS_Tutor/venv/Library/lib
+includedir=C:/Users/navee/Desktop/MBBS_Tutor/venv/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

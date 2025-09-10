@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>MBBS Tutor Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial; max-width: 860px; margin: 20px auto; }
+    textarea, select, input, button { font-size: 1rem; padding: 8px; width: 100%; }
+    .row { display: grid; gap: 12px; grid-template-columns: 1fr 160px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+    .muted { color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>MBBS Tutor Assistant</h1>
+  <p class="muted">Educational use only. Not for clinical care decisions.</p>
+
+  <div class="row">
+    <textarea id="question" rows="6" placeholder="E.g., Explain nephrotic vs nephritic syndrome differences and key investigations..."></textarea>
+    <div>
+      <label>Mode</label>
+      <select id="mode">
+        <option value="explain">Explain</option>
+        <option value="quiz">Quiz (5 MCQs)</option>
+        <option value="flashcards">Flashcards (10)</option>
+        <option value="osce">OSCE Checklist</option>
+      </select>
+      <label style="margin-top:8px; display:block;">Exam focus</label>
+      <input id="exam_focus" placeholder="Final MBBS" value="Final MBBS" />
+      <button id="go" style="margin-top:10px;">Ask</button>
+    </div>
+  </div>
+
+  <h3>Answer</h3>
+  <pre id="answer">—</pre>
+
+  <script>
+    document.getElementById('go').onclick = async () => {
+      const question = document.getElementById('question').value.trim();
+      const mode = document.getElementById('mode').value;
+      const exam_focus = document.getElementById('exam_focus').value.trim();
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ question, mode, exam_focus })
+      });
+      const data = await res.json();
+      document.getElementById('answer').textContent = data.ok ? data.answer : ('Error: ' + (data.error || 'unknown'));
+    };
+  </script>
+  <!-- Add under the existing Answer section -->
+<button id="historyBtn">Show History</button>
+<pre id="history">—</pre>
+
+<script>
+  document.getElementById('historyBtn').onclick = async () => {
+    const r = await fetch('/history');
+    const d = await r.json();
+    if (!d.ok) { document.getElementById('history').textContent = 'Error'; return; }
+    const lines = [];
+    lines.push('SID: ' + d.sid);
+    lines.push('\nSummary:\n' + (d.summary || '(none)'));
+    lines.push('\nMessages:');
+    for (const m of d.messages) lines.push(`[${m.role}] ${m.content}`);
+    document.getElementById('history').textContent = lines.join('\n');
+  };
+</script>
+
+</body>
+</html>
